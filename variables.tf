@@ -22,8 +22,6 @@ variable "vpc_cidr_block" {
   default = "20.20.0.0/16"
 }
 
-
-
 variable "public_subnets" {
   description = "Map of public subnet IDs"
   type = set(string)
@@ -45,15 +43,22 @@ variable "private_subnets" {
 # ================================================================
 # Route53 Configuration Variables
 # ================================================================
-# variable "r53_hosted_zone" {
-#   description = "The domain name of the Route53 hosted zone"
-#   type        = any
-# }
+variable "r53_hosted_zone_name" {
+  description = "The domain name of the Route53 hosted zone"
+  type        = string
+  default = "harnesstechtx.com"
+}
+
+variable "r53_hosted_zone_id" {
+  description = "The id of the Route53 hosted zone"
+  type        = string
+  default = "Z01482622Y718COFL2WJT"
+}
 
 variable "domain_name" {
   description = "Domain name for the application"
   type        = string
-  default     = "harnesstech.com"
+  default     = "harnesstechtx.com" # Expires: February 11, 2026
 }
 
 variable "subject_alternative_names" {
@@ -62,10 +67,6 @@ variable "subject_alternative_names" {
   default     = ["www.harnesstechtx.com", "blue.harnesstechtx.com", "green.harnesstechtx.com"]
 }
 
-# variable "existing_vpc_id" {
-#   description = "ID of the existing VPC"
-#   type        = string
-# }
 
 # variable "certificate_arn" {
 #   description = "ARN of the SSL certificate"
@@ -90,11 +91,6 @@ variable "service_desired_count" {
   description = "Desired number of tasks"
   type        = number
   default     = 2
-}
-variable "ecs_ami_id" {
-  description = "AMI ID for ECS instances"
-  type        = string
-  default     = "ami-0c02fb55956c7d316" # ECS-optimized Amazon Linux 2
 }
 
 variable "ecs_instance_type" {

@@ -1,6 +1,6 @@
 # ACM Certificate (DNS validation)
 resource "aws_acm_certificate" "cert" {
-  domain_name               = var.r53_hosted_zone.name
+  domain_name               = var.r53_hosted_zone_name
   validation_method         = "DNS" # Options: EMAIL, DNS
   subject_alternative_names = var.subject_alternative_names
 
@@ -19,7 +19,7 @@ resource "aws_route53_record" "cert_validation" {
   name    = each.value.name
   type    = each.value.type
   ttl     = 60
-  zone_id = var.r53_hosted_zone.id # hosted zone id
+  zone_id = var.r53_hosted_zone_id # hosted zone id
   records = [each.value.record]
 }
 
@@ -33,7 +33,7 @@ resource "aws_acm_certificate_validation" "cert" {
 # Route53 Records
 # ------------------------
 resource "aws_route53_record" "main" {
-  zone_id = var.r53_hosted_zone.id
+  zone_id = var.r53_hosted_zone_id
   name    = var.domain_name
   type    = "A"
 
@@ -45,7 +45,7 @@ resource "aws_route53_record" "main" {
 }
 
 resource "aws_route53_record" "www" {
-  zone_id = var.r53_hosted_zone.id
+  zone_id = var.r53_hosted_zone_id
   name    = "www.${var.domain_name}"
   type    = "A"
 
@@ -58,7 +58,7 @@ resource "aws_route53_record" "www" {
 
 # Test subdomains for blue/green environments
 resource "aws_route53_record" "blue" {
-  zone_id = var.r53_hosted_zone.id
+  zone_id = var.r53_hosted_zone_id
   name    = "blue.${var.domain_name}"
   type    = "A"
 
@@ -70,7 +70,7 @@ resource "aws_route53_record" "blue" {
 }
 
 resource "aws_route53_record" "green" {
-  zone_id = var.r53_hosted_zone.id
+  zone_id = var.r53_hosted_zone_id
   name    = "green.${var.domain_name}"
   type    = "A"
 

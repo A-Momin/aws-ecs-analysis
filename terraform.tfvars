@@ -7,7 +7,7 @@ aws_region = "us-east-1"
 project_name = "django-app"
 
 # Existing Infrastructure
-domain_name     = "harnesstech.com"
+domain_name     = "harnesstechtx.com"
 key_pair_name   = "general_purpose"  # Replace with your key pair name
 
 # # Database Configuration
@@ -16,7 +16,6 @@ key_pair_name   = "general_purpose"  # Replace with your key pair name
 # db_instance_class = "db.t3.micro"
 
 # ECS Configuration
-ecs_ami_id         = "ami-0c02fb55956c7d316"  # ECS-optimized Amazon Linux 2
 ecs_instance_type  = "t3.small"
 task_cpu           = 512
 task_memory        = 1024
