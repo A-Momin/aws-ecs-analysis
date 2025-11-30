@@ -39,7 +39,8 @@ resource "aws_iam_role_policy" "ecs_task_execution_secrets" {
         ]
         Resource = [
           #   aws_secretsmanager_secret.db_credentials.arn,
-          aws_secretsmanager_secret.django_secret_key.arn
+          #   aws_secretsmanager_secret.django_secret_key.arn
+          "*"
         ]
       }
     ]
@@ -102,59 +103,35 @@ resource "aws_iam_role" "ecs_task_role" {
   tags = local.common_tags
 }
 
-resource "aws_iam_role_policy" "ecs_task_s3_policy" {
-  name = "${var.project_name}-ecs-s3-policy"
-  role = aws_iam_role.ecs_task_role.id
+# resource "aws_iam_role_policy" "ecs_task_s3_policy" {
+#   name = "${var.project_name}-ecs-s3-policy"
+#   role = aws_iam_role.ecs_task_role.id
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
-        ]
-        Resource = [
-          "${aws_s3_bucket.django_static.arn}/*",
-          "${aws_s3_bucket.django_media.arn}/*"
-        ]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:ListBucket"
-        ]
-        Resource = [
-          aws_s3_bucket.django_static.arn,
-          aws_s3_bucket.django_media.arn
-        ]
-      }
-    ]
-  })
-}
-
-# resource "aws_iam_role" "rds_monitoring" {
-#   name = "${var.project_name}-rds-monitoring-role"
-
-#   assume_role_policy = jsonencode({
+#   policy = jsonencode({
 #     Version = "2012-10-17"
 #     Statement = [
 #       {
-#         Action = "sts:AssumeRole"
 #         Effect = "Allow"
-#         Principal = {
-#           Service = "monitoring.rds.amazonaws.com"
-#         }
+#         Action = [
+#           "s3:GetObject",
+#           "s3:PutObject",
+#           "s3:DeleteObject"
+#         ]
+#         Resource = [
+#           "${aws_s3_bucket.django_static.arn}/*",
+#           "${aws_s3_bucket.django_media.arn}/*"
+#         ]
+#       },
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "s3:ListBucket"
+#         ]
+#         Resource = [
+#           aws_s3_bucket.django_static.arn,
+#           aws_s3_bucket.django_media.arn
+#         ]
 #       }
 #     ]
 #   })
-
-#   tags = local.common_tags
-# }
-
-# resource "aws_iam_role_policy_attachment" "rds_monitoring" {
-#   role       = aws_iam_role.rds_monitoring.name
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 # }

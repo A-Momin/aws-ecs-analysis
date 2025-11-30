@@ -96,19 +96,19 @@ variable "service_desired_count" {
 variable "ecs_instance_type" {
   description = "EC2 instance type for ECS"
   type        = string
-  default     = "t3.small"
+  default     = "t3.medium"
 }
 
 variable "task_cpu" {
   description = "CPU units for the task"
   type        = number
-  default     = 512
+  default     = 1024
 }
 
 variable "task_memory" {
   description = "Memory for the task"
   type        = number
-  default     = 1024
+  default     = 2048
 }
 
 variable "app_versions" {

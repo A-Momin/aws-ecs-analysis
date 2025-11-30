@@ -12,7 +12,7 @@ output "alb_zone_id" {
 
 output "listener_arn" {
   description = "ARN of the HTTPS listener"
-  value       = aws_lb_listener.https.arn
+  value       = aws_lb_listener.http.arn
 }
 
 output "blue_target_group_arn" {
@@ -20,10 +20,10 @@ output "blue_target_group_arn" {
   value       = aws_lb_target_group.environments["blue"].arn
 }
 
-output "green_target_group_arn" {
-  description = "ARN of the green target group"
-  value       = aws_lb_target_group.environments["green"].arn
-}
+# output "green_target_group_arn" {
+#   description = "ARN of the green target group"
+#   value       = aws_lb_target_group.environments["green"].arn
+# }
 
 output "ecr_repository_url" {
   description = "URL of the ECR repository"
@@ -35,15 +35,15 @@ output "ecs_cluster_name" {
   value       = aws_ecs_cluster.django_cluster.name
 }
 
-output "blue_service_name" {
-  description = "Name of the blue ECS service"
-  value       = aws_ecs_service.django_app["blue"].name
-}
+# output "blue_service_name" {
+#   description = "Name of the blue ECS service"
+#   value       = aws_ecs_service.django_app["blue"].name
+# }
 
-output "green_service_name" {
-  description = "Name of the green ECS service"
-  value       = aws_ecs_service.django_app["green"].name
-}
+# output "green_service_name" {
+#   description = "Name of the green ECS service"
+#   value       = aws_ecs_service.django_app["green"].name
+# }
 
 # output "database_endpoint" {
 #   description = "RDS database endpoint"

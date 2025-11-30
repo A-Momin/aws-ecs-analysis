@@ -16,18 +16,6 @@ resource "aws_ecs_cluster" "django_cluster" {
   tags = local.common_tags
 }
 
-# resource "aws_ecs_cluster_capacity_providers" "django_cluster" {
-#   cluster_name = aws_ecs_cluster.django_cluster.name
-
-#   capacity_providers = ["EC2"]
-
-#   default_capacity_provider_strategy {
-#     base              = 1
-#     weight            = 100
-#     capacity_provider = "EC2"
-#   }
-# }
-
 # ------------------------
 # ECS Task Definition
 # ------------------------
@@ -35,7 +23,7 @@ resource "aws_ecs_task_definition" "django_app" {
   for_each = toset(local.environments)
 
   family                   = "${var.project_name}-task-def-${each.key}"
-  network_mode             = "awsvpc" # "bridge", "awsvpc"
+  network_mode             = "bridge" # "bridge", "awsvpc"
   requires_compatibilities = ["EC2"]
   cpu                      = var.task_cpu
   memory                   = var.task_memory
@@ -49,6 +37,7 @@ resource "aws_ecs_task_definition" "django_app" {
 
       portMappings = [
         {
+          hostPort      = 0
           containerPort = var.container_port
           protocol      = "tcp"
         }
@@ -65,11 +54,7 @@ resource "aws_ecs_task_definition" "django_app" {
         },
         {
           name  = "DJANGO_CORS_ALLOWED_ORIGINS"
-          value = "https://${aws_lb.main.dns_name}" # Use HTTPS if ALB uses a listener with a certificate
-        },
-        {
-          name  = "DJANGO_STATIC_ROOT"
-          value = var.django_static_root
+          value = "http://${aws_lb.main.dns_name}" # Use HTTPS if ALB uses a listener with a certificate
         },
         {
           name  = "DJANGO_SETTINGS_MODULE"
@@ -139,20 +124,13 @@ resource "aws_ecs_service" "django_app" {
 
   launch_type = "EC2" # Options: EC2, FARGATE
 
-  network_configuration {
-    subnets          = var.private_subnets
-    security_groups  = [aws_security_group.ecs_sg.id]
-    assign_public_ip = false
-  }
-
   load_balancer {
     # This config integrates `aws_ecs_service` with `aws_lb_target_group`
     target_group_arn = aws_lb_target_group.environments[each.key].arn
     container_name   = "${var.project_name}-container-def-${each.key}"
-    container_port   = 8000
+    container_port   = var.container_port
   }
 
-  # depends_on = [aws_lb_listener.https]
   depends_on = [aws_lb_listener.http]
 
   tags = merge(local.common_tags, {
@@ -180,15 +158,16 @@ resource "aws_launch_template" "ecs_instances" {
   instance_type = var.ecs_instance_type
   key_name      = var.key_pair_name
 
-  vpc_security_group_ids = [aws_security_group.ecs_sg.id]
+  vpc_security_group_ids = [aws_security_group.ecs_container_instance_sg.id]
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_instance_profile.name
   }
 
-  user_data = base64encode(templatefile("${path.module}/scripts/user_data_2.sh", {
+  user_data = base64encode(templatefile("${path.module}/scripts/user_data_simple.sh", {
     cluster_name = aws_ecs_cluster.django_cluster.name
   }))
+
 
   tag_specifications {
     resource_type = "instance"
@@ -205,8 +184,8 @@ resource "aws_launch_template" "ecs_instances" {
 resource "aws_autoscaling_group" "ecs_asg" {
     name                = "${var.project_name}-ecs-asg"
   vpc_zone_identifier = var.private_subnets
-  # target_group_arns         = values(aws_lb_target_group.environments)[*].arn
-  health_check_type         = "ELB"
+  #   target_group_arns         = values(aws_lb_target_group.environments)[*].arn
+  health_check_type         = "EC2" # "ELB"
   health_check_grace_period = 300
 
   min_size         = var.asg_config.min_size
@@ -240,14 +219,14 @@ resource "aws_autoscaling_group" "ecs_asg" {
 # ------------------------
 resource "aws_cloudwatch_log_group" "django_app" {
   name              = "/ecs/${var.project_name}"
-  retention_in_days = 7
+  retention_in_days = 1
 
   tags = local.common_tags
 }
 
 resource "aws_cloudwatch_log_group" "ecs_exec" {
   name              = "/aws/ecs/exec/${var.project_name}"
-  retention_in_days = 7
+  retention_in_days = 1
 
   tags = local.common_tags
 }

@@ -1,7 +1,7 @@
 
 # Local values
 locals {
-  environments = ["blue", "green"]
+  environments = ["blue"]
 
   common_tags = {
     Project     = var.project_name
