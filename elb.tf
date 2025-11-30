@@ -55,15 +55,15 @@ resource "aws_lb_listener" "http" {
   port              = "80"
   protocol          = "HTTP"
 
-    default_action {
-      type = "redirect"
+  default_action {
+    type = "redirect"
 
-      redirect {
-        port        = "443"
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
     }
+  }
 
   tags = local.common_tags
 }
@@ -77,7 +77,7 @@ resource "aws_lb_listener" "https" {
 
   # Default action points to the active environment
   default_action {
-    type             = "forward"
+    type = "forward"
     # # This config integrates `aws_lb` (through it's listener) with `aws_lb_target_group`
     target_group_arn = aws_lb_target_group.environments[var.active_environment].arn
   }
@@ -90,11 +90,11 @@ resource "aws_lb_listener" "https" {
 # ALB Listener Rules for Testing
 # ------------------------
 resource "aws_lb_listener_rule" "blue_test" {
-    listener_arn = aws_lb_listener.https.arn
+  listener_arn = aws_lb_listener.https.arn
   priority     = 100
 
   action {
-    type             = "forward"
+    type = "forward"
     # # This config integrates `aws_lb` (through it's listener) with `aws_lb_target_group`
     target_group_arn = aws_lb_target_group.environments["blue"].arn
   }
@@ -109,11 +109,11 @@ resource "aws_lb_listener_rule" "blue_test" {
 }
 
 resource "aws_lb_listener_rule" "green_test" {
-    listener_arn = aws_lb_listener.https.arn
+  listener_arn = aws_lb_listener.https.arn
   priority     = 101
 
   action {
-    type             = "forward"
+    type = "forward"
     # # This config integrates `aws_lb` (through it's listener) with `aws_lb_target_group`
     target_group_arn = aws_lb_target_group.environments["green"].arn
   }

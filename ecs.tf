@@ -174,7 +174,7 @@ data "aws_ssm_parameter" "ecs_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 resource "aws_launch_template" "ecs_instances" {
-  name_prefix   = "${var.project_name}-ecs-"
+  name_prefix = "${var.project_name}-ecs-"
   # image_id      = var.ecs_ami_id
   image_id      = data.aws_ssm_parameter.ecs_ami.value
   instance_type = var.ecs_instance_type
@@ -203,7 +203,7 @@ resource "aws_launch_template" "ecs_instances" {
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-    name                = "${var.project_name}-ecs-asg"
+  name                = "${var.project_name}-ecs-asg"
   vpc_zone_identifier = var.private_subnets
   # target_group_arns         = values(aws_lb_target_group.environments)[*].arn
   health_check_type         = "ELB"

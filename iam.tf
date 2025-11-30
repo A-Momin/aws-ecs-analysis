@@ -38,8 +38,9 @@ resource "aws_iam_role_policy" "ecs_task_execution_secrets" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          #   aws_secretsmanager_secret.db_credentials.arn,
-          aws_secretsmanager_secret.django_secret_key.arn
+          aws_secretsmanager_secret.django_secret_key.arn,
+          aws_secretsmanager_secret.django_stripe_secret_key.arn,
+          aws_secretsmanager_secret.django_stripe_endpoint_secret.arn,
         ]
       }
     ]

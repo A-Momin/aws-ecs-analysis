@@ -52,10 +52,10 @@ resource "aws_security_group" "ecs_sg" {
   }
 
   ingress {
-    description     = "HTTP from ALB"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
+    description = "HTTP from ALB"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = var.vpc_cidr_block != null ? [var.vpc_cidr_block] : []
   }
 
@@ -82,12 +82,12 @@ resource "aws_security_group" "endpoint_sg" {
 
   # Inbound rule: Allow HTTPS from the ECS Security Group
   ingress {
-    description     = "HTTPS from ECS instances/tasks"
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
+    description = "HTTPS from ECS instances/tasks"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     # Allow traffic originating from the security group attached to the ECS instances/tasks
-    security_groups = [aws_security_group.ecs_sg.id] 
+    security_groups = [aws_security_group.ecs_sg.id]
   }
 
   # Outbound rule: Endpoints don't generally initiate connections, but default all egress is fine.

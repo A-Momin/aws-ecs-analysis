@@ -13,25 +13,25 @@ variable "aws_region" {
 variable "vpc_id" {
   description = "The VPC object"
   type        = string
-  default = "vpc-043506b8f2a3086b7"
+  default     = "vpc-043506b8f2a3086b7"
 }
 
 variable "vpc_cidr_block" {
   description = "The VPC object"
   type        = string
-  default = "20.20.0.0/16"
+  default     = "20.20.0.0/16"
 }
 
 variable "public_subnets" {
   description = "Map of public subnet IDs"
-  type = set(string)
-  default = ["subnet-0923d23cbcc79dc9c","subnet-07910447c7be16a94"]
+  type        = set(string)
+  default     = ["subnet-0923d23cbcc79dc9c", "subnet-07910447c7be16a94"]
 }
 
 variable "private_subnets" {
   description = "Map of private subnet IDs"
   type        = set(string)
-  default = ["subnet-080856a486501be0f","subnet-0760170ed6f75b8eb"]
+  default     = ["subnet-080856a486501be0f", "subnet-0760170ed6f75b8eb"]
 
   #   # If you only need a few fields (e.g., `id` and `availability_zone`), you can define a smaller object:
   #   type = map(object({
@@ -46,13 +46,13 @@ variable "private_subnets" {
 variable "r53_hosted_zone_name" {
   description = "The domain name of the Route53 hosted zone"
   type        = string
-  default = "harnesstechtx.com"
+  default     = "harnesstechtx.com"
 }
 
 variable "r53_hosted_zone_id" {
   description = "The id of the Route53 hosted zone"
   type        = string
-  default = "Z01482622Y718COFL2WJT"
+  default     = "Z01482622Y718COFL2WJT"
 }
 
 variable "domain_name" {
@@ -96,7 +96,7 @@ variable "service_desired_count" {
 variable "ecs_instance_type" {
   description = "EC2 instance type for ECS"
   type        = string
-  default     = "t3.small"
+  default     = "t3.medium"
 }
 
 variable "task_cpu" {
@@ -197,23 +197,3 @@ variable "django_stripe_endpoint_secret" {
   sensitive   = true # Mark as sensitive to prevent output in logs/state
 }
 
-# ================================================================
-# # Database Configuration Variables
-# ================================================================
-# variable "db_name" {
-#   description = "Database name"
-#   type        = string
-#   default     = "djangodb"
-# }
-
-# variable "db_username" {
-#   description = "Database username"
-#   type        = string
-#   default     = "djangouser"
-# }
-
-# variable "db_instance_class" {
-#   description = "RDS instance class"
-#   type        = string
-#   default     = "db.t3.micro"
-# }
