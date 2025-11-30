@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "django_app" {
         },
         {
           name  = "DJANGO_ALLOWED_HOSTS"
-          value = "${aws_lb.main.dns_name},127.0.0.1,localhost"
+          value = "${var.domain_name},127.0.0.1,localhost"
         },
         {
           name  = "DJANGO_CORS_ALLOWED_ORIGINS"
@@ -140,6 +140,7 @@ resource "aws_ecs_service" "django_app" {
   launch_type = "EC2" # Options: EC2, FARGATE
 
   network_configuration {
+    # Network configuration for the service. This parameter is required for task definitions that use the aws`vpc network mode only to receive their own Elastic Network Interface
     subnets          = var.private_subnets
     security_groups  = [aws_security_group.ecs_sg.id]
     assign_public_ip = false
@@ -186,7 +187,7 @@ resource "aws_launch_template" "ecs_instances" {
     name = aws_iam_instance_profile.ecs_instance_profile.name
   }
 
-  user_data = base64encode(templatefile("${path.module}/scripts/user_data_2.sh", {
+  user_data = base64encode(templatefile("${path.module}/scripts/user_data_simple.sh", {
     cluster_name = aws_ecs_cluster.django_cluster.name
   }))
 
